@@ -1,15 +1,12 @@
-package org.gioneco.analytics.android.sdk
+package org.gioneco.analytics.android.sdk.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -33,8 +30,9 @@ import java.util.HashMap
 import java.util.Locale
 
 import androidx.appcompat.widget.SwitchCompat
+import org.gioneco.analytics.android.sdk.http.DataAPI
 
-object DataPrivate {
+object DataUtils {
     private val mDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss" + ".SSS", Locale.CHINA)
     /**
      * JSONObject 字符串转换
@@ -131,28 +129,26 @@ object DataPrivate {
         }
 
         var viewType: String? = null
-        if (view is CheckBox) { // CheckBox
-            viewType = "CheckBox"
-        } else if (view is SwitchCompat) {
-            viewType = "SwitchCompat"
-        } else if (view is RadioButton) { // RadioButton
-            viewType = "RadioButton"
-        } else if (view is ToggleButton) { // ToggleButton
-            viewType = "ToggleButton"
-        } else if (view is Button) { // Button
-            viewType = "Button"
-        } else if (view is CheckedTextView) { // CheckedTextView
-            viewType = "CheckedTextView"
-        } else if (view is TextView) { // TextView
-            viewType = "TextView"
-        } else if (view is ImageButton) { // ImageButton
-            viewType = "ImageButton"
-        } else if (view is ImageView) { // ImageView
-            viewType = "ImageView"
-        } else if (view is RatingBar) {
-            viewType = "RatingBar"
-        } else if (view is SeekBar) {
-            viewType = "SeekBar"
+        when (view) {
+            is CheckBox -> // CheckBox
+                viewType = "CheckBox"
+            is SwitchCompat -> viewType = "SwitchCompat"
+            is RadioButton -> // RadioButton
+                viewType = "RadioButton"
+            is ToggleButton -> // ToggleButton
+                viewType = "ToggleButton"
+            is Button -> // Button
+                viewType = "Button"
+            is CheckedTextView -> // CheckedTextView
+                viewType = "CheckedTextView"
+            is TextView -> // TextView
+                viewType = "TextView"
+            is ImageButton -> // ImageButton
+                viewType = "ImageButton"
+            is ImageView -> // ImageView
+                viewType = "ImageView"
+            is RatingBar -> viewType = "RatingBar"
+            is SeekBar -> viewType = "SeekBar"
         }
         return viewType
     }

@@ -1,4 +1,4 @@
-package org.gioneco.analytics.android.sdk
+package org.gioneco.analytics.android.sdk.http
 
 import android.app.Application
 import android.util.Log
@@ -6,6 +6,7 @@ import android.util.Log
 import org.json.JSONObject
 
 import androidx.annotation.Keep
+import org.gioneco.analytics.android.sdk.utils.DataUtils
 
 @Keep
 class DataAPI private constructor() {
@@ -26,14 +27,15 @@ class DataAPI private constructor() {
         private lateinit var application: Application
         @Keep
         fun init(application: Application): DataAPI {
-            mDeviceId = DataPrivate.getAndroidID(application.applicationContext)
-            mDeviceInfo = DataPrivate.getDeviceInfo(application.applicationContext)
-            this.application = application
+            mDeviceId = DataUtils.getAndroidID(application.applicationContext)
+            mDeviceInfo = DataUtils.getDeviceInfo(application.applicationContext)
+            Companion.application = application
             return getInstance()
         }
 
         fun getInstance() = instance ?: synchronized(this) {
-            instance ?: DataAPI().also { instance = it }
+            instance
+                    ?: DataAPI().also { instance = it }
         }
     }
 
@@ -53,13 +55,13 @@ class DataAPI private constructor() {
             val sendProperties = JSONObject(mDeviceInfo)
 
             if (properties != null) {
-                DataPrivate.mergeJSONObject(properties, sendProperties)
+                DataUtils.mergeJSONObject(properties, sendProperties)
             }
 
             jsonObject.put("properties", sendProperties)
             jsonObject.put("time", System.currentTimeMillis())
             //
-            //            Log.i(TAG, DataPrivate.formatJson(jsonObject.toString()));
+            //            Log.i(TAG, DataUtils.formatJson(jsonObject.toString()));
             Log.i(mTAG, "上传数据。。。。。" + properties!!)
 
         } catch (e: Exception) {

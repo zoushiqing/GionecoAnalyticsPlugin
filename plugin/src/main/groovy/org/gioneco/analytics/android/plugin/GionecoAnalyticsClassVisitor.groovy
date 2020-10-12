@@ -9,7 +9,7 @@ import org.objectweb.asm.Type
 
 class GionecoAnalyticsClassVisitor extends ClassVisitor implements Opcodes {
     private final
-    static String SDK_API_CLASS = "org/gioneco/analytics/android/sdk/DataAutoTrackHelper"
+    static String SDK_API_CLASS = "org/gioneco/analytics/android/sdk/helper/DataAutoTrackHelper"
     private String[] mInterfaces
     private ClassVisitor classVisitor
 

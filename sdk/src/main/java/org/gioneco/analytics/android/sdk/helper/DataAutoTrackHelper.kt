@@ -1,4 +1,4 @@
-package org.gioneco.analytics.android.sdk
+package org.gioneco.analytics.android.sdk.helper
 
 import android.app.Dialog
 import android.content.Context
@@ -16,7 +16,12 @@ import java.util.Locale
 import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
+import org.gioneco.analytics.android.sdk.http.DataAPI
+import org.gioneco.analytics.android.sdk.utils.DataUtils
 
+/**
+ * 点击事件统计helper
+ */
 object DataAutoTrackHelper {
     /**
      * dialog 被点击，自动埋点
@@ -36,7 +41,7 @@ object DataAutoTrackHelper {
 
             val context = dialog.context
             //将Context转成Activity
-            var activity = DataPrivate.getActivityFromContext(context)
+            var activity = DataUtils.getActivityFromContext(context)
 
             if (activity == null) {
                 activity = dialog.ownerActivity
@@ -78,7 +83,7 @@ object DataAutoTrackHelper {
 
             val properties = JSONObject()
 
-            val activity = DataPrivate.getActivityFromContext(context)
+            val activity = DataUtils.getActivityFromContext(context)
 
             try {
                 val idString = context.resources.getResourceEntryName(view.id)
@@ -167,7 +172,7 @@ object DataAutoTrackHelper {
 
             val context = dialog.context
             //将Context转成Activity
-            var activity = DataPrivate.getActivityFromContext(context)
+            var activity = DataUtils.getActivityFromContext(context)
 
             if (activity == null) {
                 activity = dialog.ownerActivity
@@ -237,7 +242,7 @@ object DataAutoTrackHelper {
                     jsonObject.put("\$element_id", idString)
                 }
 
-                val activity = DataPrivate.getActivityFromContext(context)
+                val activity = DataUtils.getActivityFromContext(context)
                 if (activity != null) {
                     jsonObject.put("\$activity", activity.javaClass.canonicalName)
                 }
@@ -289,7 +294,7 @@ object DataAutoTrackHelper {
             val context = expandableListView.context ?: return
 
             val properties = JSONObject()
-            val activity = DataPrivate.getActivityFromContext(context)
+            val activity = DataUtils.getActivityFromContext(context)
             if (activity != null) {
                 properties.put("\$activity", activity.javaClass.canonicalName)
             }
@@ -300,7 +305,7 @@ object DataAutoTrackHelper {
                 properties.put("\$element_position", String.format(Locale.CHINA, "%d", groupPosition))
             }
 
-            val idString = DataPrivate.getViewId(expandableListView)
+            val idString = DataUtils.getViewId(expandableListView)
             if (!TextUtils.isEmpty(idString)) {
                 properties.put("\$element_id", idString)
             }
@@ -311,7 +316,7 @@ object DataAutoTrackHelper {
             if (view is ViewGroup) {
                 try {
                     val stringBuilder = StringBuilder()
-                    viewText = DataPrivate.traverseViewContent(stringBuilder, view)
+                    viewText = DataUtils.traverseViewContent(stringBuilder, view)
                     if (!TextUtils.isEmpty(viewText)) {
                         viewText = viewText!!.substring(0, viewText.length - 1)
                     }
@@ -344,8 +349,8 @@ object DataAutoTrackHelper {
 
             val properties = JSONObject()
 
-            val activity = DataPrivate.getActivityFromContext(context)
-            val idString = DataPrivate.getViewId(adapterView)
+            val activity = DataUtils.getActivityFromContext(context)
+            val idString = DataUtils.getViewId(adapterView)
             if (!TextUtils.isEmpty(idString)) {
                 properties.put("\$element_id", idString)
             }
@@ -374,7 +379,7 @@ object DataAutoTrackHelper {
                 if (view is ViewGroup) {
                     try {
                         val stringBuilder = StringBuilder()
-                        viewText = DataPrivate.traverseViewContent(stringBuilder, view)
+                        viewText = DataUtils.traverseViewContent(stringBuilder, view)
                         if (!TextUtils.isEmpty(viewText)) {
                             viewText = viewText!!.substring(0, viewText.length - 1)
                         }
@@ -383,7 +388,7 @@ object DataAutoTrackHelper {
                     }
 
                 } else {
-                    viewText = DataPrivate.getElementContent(view)
+                    viewText = DataUtils.getElementContent(view)
                 }
                 //$element_content
                 if (!TextUtils.isEmpty(viewText)) {
@@ -407,11 +412,11 @@ object DataAutoTrackHelper {
     fun trackViewOnClick(view: View) {
         try {
             val jsonObject = JSONObject()
-            jsonObject.put("\$element_type", DataPrivate.getElementType(view))
-            jsonObject.put("\$element_id", DataPrivate.getViewId(view))
-            jsonObject.put("\$element_content", DataPrivate.getElementContent(view))
+            jsonObject.put("\$element_type", DataUtils.getElementType(view))
+            jsonObject.put("\$element_id", DataUtils.getViewId(view))
+            jsonObject.put("\$element_content", DataUtils.getElementContent(view))
 
-            val activity = DataPrivate.getActivityFromView(view)
+            val activity = DataUtils.getActivityFromView(view)
             if (activity != null) {
                 jsonObject.put("\$activity", activity.javaClass.canonicalName)
             }

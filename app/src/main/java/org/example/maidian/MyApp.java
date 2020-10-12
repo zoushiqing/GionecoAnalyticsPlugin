@@ -2,7 +2,7 @@ package org.example.maidian;
 
 import android.app.Application;
 
-import org.gioneco.analytics.android.sdk.DataAPI;
+import org.gioneco.analytics.android.sdk.http.DataAPI;
 
 
 /**
