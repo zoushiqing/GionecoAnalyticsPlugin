@@ -6,8 +6,10 @@ import android.util.Log
 import org.json.JSONObject
 
 import androidx.annotation.Keep
+import org.gioneco.analytics.android.sdk.BuildConfig
 import org.gioneco.analytics.android.sdk.helper.DataAppViewScreenHelper
 import org.gioneco.analytics.android.sdk.utils.DataUtils
+import java.util.*
 
 @Keep
 class DataAPI private constructor() {
@@ -27,12 +29,13 @@ class DataAPI private constructor() {
         var mDeviceId: String = ""
         private lateinit var application: Application
         @Keep
-        fun init(application: Application): DataAPI {
+        fun init(application: Application) {
+            //禁止埋点
+            if (BuildConfig.GIONECO_ANALYTICS_DISABLE_PLUGIN) return
             mDeviceId = DataUtils.getAndroidID(application.applicationContext)
             mDeviceInfo = DataUtils.getDeviceInfo(application.applicationContext)
             DataAppViewScreenHelper.registerActivityLifecycleCallbacks(application)
             Companion.application = application
-            return getInstance()
         }
 
         fun getInstance() = instance ?: synchronized(this) {
@@ -64,7 +67,7 @@ class DataAPI private constructor() {
             jsonObject.put("time", System.currentTimeMillis())
             //
             //            Log.i(TAG, DataUtils.formatJson(jsonObject.toString()));
-            Log.i(mTAG, "上传数据。。。。。" + properties!!)
+            Log.i(mTAG, "上传数据。。。。。$jsonObject")
 
         } catch (e: Exception) {
             e.printStackTrace()
