@@ -23,6 +23,6 @@ public class MyApp extends Application {
      * @param application Application
      */
     private void initGionecoDataAPI(Application application) {
-        DataAPI.init(application);
+        DataAPI.Companion.init(application);
     }
 }
