@@ -20,7 +20,7 @@ class GionecoAnalyticsPlugin implements Plugin<Project> {
             AppExtension appExtension = project.extensions.findByType(AppExtension.class)
             appExtension.registerTransform(new GionecoAnalyticsTransform(project, extension))
         } else {
-            println("------------您已关闭了神策插件--------------")
+            println("------------您已关闭了智元汇插件--------------")
         }
     }
 }
