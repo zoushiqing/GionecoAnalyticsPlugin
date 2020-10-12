@@ -17,7 +17,7 @@ class GionecoAnalyticsClassModifier {
     static {
         exclude = new HashSet<>()
         exclude.add('android.support')
-        exclude.add('com.sensorsdata.analytics.android.sdk')
+        exclude.add('org.gioneco.analytics.android.sdk')
     }
 
     static File modifyJar(File jarFile, File tempDir, boolean nameHex) {

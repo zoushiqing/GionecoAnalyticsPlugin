@@ -2,7 +2,7 @@ package org.example.maidian;
 
 import android.app.Application;
 
-import org.gioneco.analytics.android.sdk.SensorsDataAPI;
+import org.gioneco.analytics.android.sdk.DataAPI;
 
 
 /**
@@ -14,7 +14,7 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        initSensorsDataAPI(this);
+        initGionecoDataAPI(this);
     }
 
     /**
@@ -22,7 +22,7 @@ public class MyApp extends Application {
      *
      * @param application Application
      */
-    private void initSensorsDataAPI(Application application) {
-        SensorsDataAPI.init(application);
+    private void initGionecoDataAPI(Application application) {
+        DataAPI.init(application);
     }
 }

@@ -5,6 +5,11 @@ buildscript {
         google()
         jcenter()
         maven {
+//            url 'http://10.255.50.98:8081/repository/maven-releases/'
+//            credentials{
+//                username 'zoushiqing'
+//                password '123456'
+//            }
             url uri('repo')
         }
     }
@@ -18,7 +23,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 

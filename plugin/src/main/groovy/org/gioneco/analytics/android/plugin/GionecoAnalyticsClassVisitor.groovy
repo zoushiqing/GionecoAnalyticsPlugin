@@ -9,7 +9,7 @@ import org.objectweb.asm.Type
 
 class GionecoAnalyticsClassVisitor extends ClassVisitor implements Opcodes {
     private final
-    static String SDK_API_CLASS = "com/sensorsdata/analytics/android/sdk/SensorsDataAutoTrackHelper"
+    static String SDK_API_CLASS = "org/gioneco/analytics/android/sdk/DataAutoTrackHelper"
     private String[] mInterfaces
     private ClassVisitor classVisitor
 
@@ -45,7 +45,7 @@ class GionecoAnalyticsClassVisitor extends ClassVisitor implements Opcodes {
 
             @Override
             void visitEnd() {
-                Object.visitEnd()
+                super.visitEnd()
 
                 if (mLambdaMethodCells.containsKey(nameDesc)) {
                     mLambdaMethodCells.remove(nameDesc)
@@ -70,7 +70,7 @@ class GionecoAnalyticsClassVisitor extends ClassVisitor implements Opcodes {
 
             @Override
             protected void onMethodEnter() {
-                Object.onMethodEnter()
+                super.onMethodEnter()
 
                 /**
                  * 在 android.gradle 的 3.2.1 版本中，针对 view 的 setOnClickListener 方法 的 lambda 表达式做特殊处理。
@@ -175,11 +175,11 @@ class GionecoAnalyticsClassVisitor extends ClassVisitor implements Opcodes {
 
             @Override
             AnnotationVisitor visitAnnotation(String s, boolean b) {
-                if (s == 'Lcom/sensorsdata/analytics/android/sdk/SensorsDataTrackViewOnClick;') {
+                if (s == 'Lorg/gioneco/analytics/android/sdk/DataTrackViewOnClick;') {
                     isSensorsDataTrackViewOnClickAnnotation = true
                 }
 
-                return Object.visitAnnotation(s, b)
+                return super.visitAnnotation(s, b)
             }
         }
         return methodVisitor

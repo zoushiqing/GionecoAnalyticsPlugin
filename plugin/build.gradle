@@ -16,12 +16,12 @@ dependencies {
 repositories {
     jcenter()
 }
+def NEXUS_REPOSITORY_URL="http://10.255.50.98:8081/repository/maven-releases/"
+def NEXUS_USERNAME="zoushiqing"
+def NEXUS_PASSWORD="123456"
 
 uploadArchives {
     repositories.mavenDeployer {
-        //本地仓库路径，以放到项目根目录下的 repo 的文件夹为例
-        repository(url: uri('../repo'))
-
         //groupId ，自行定义
         pom.groupId = 'org.gionecodata'
 
@@ -30,6 +30,13 @@ uploadArchives {
 
         //插件版本号
         pom.version = '1.0.0'
+
+//        //仓库
+//        repository(url: uri(NEXUS_REPOSITORY_URL)) {
+//            authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+//        }
+        //本地仓库路径，以放到项目根目录下的 repo 的文件夹为例 maven用上面的
+        repository(url: uri('../repo'))
     }
 }
 

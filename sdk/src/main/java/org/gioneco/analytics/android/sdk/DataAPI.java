@@ -12,33 +12,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 @Keep
-public class SensorsDataAPI {
+public class DataAPI {
     private final String TAG = this.getClass().getSimpleName();
     public static final String SDK_VERSION = "1.0.0";
-    private static SensorsDataAPI INSTANCE;
+    private static DataAPI INSTANCE;
     private static final Object mLock = new Object();
     private static Map<String, Object> mDeviceInfo;
     private String mDeviceId;
 
     @Keep
     @SuppressWarnings("UnusedReturnValue")
-    public static SensorsDataAPI init(Application application) {
+    public static DataAPI init(Application application) {
         synchronized (mLock) {
             if (null == INSTANCE) {
-                INSTANCE = new SensorsDataAPI(application);
+                INSTANCE = new DataAPI(application);
             }
             return INSTANCE;
         }
     }
 
     @Keep
-    public static SensorsDataAPI getInstance() {
+    public static DataAPI getInstance() {
         return INSTANCE;
     }
 
-    private SensorsDataAPI(Application application) {
-        mDeviceId = SensorsDataPrivate.getAndroidID(application.getApplicationContext());
-        mDeviceInfo = SensorsDataPrivate.getDeviceInfo(application.getApplicationContext());
+    private DataAPI(Application application) {
+        mDeviceId = DataPrivate.getAndroidID(application.getApplicationContext());
+        mDeviceInfo = DataPrivate.getDeviceInfo(application.getApplicationContext());
     }
 
     /**
@@ -57,13 +57,13 @@ public class SensorsDataAPI {
             JSONObject sendProperties = new JSONObject(mDeviceInfo);
 
             if (properties != null) {
-                SensorsDataPrivate.mergeJSONObject(properties, sendProperties);
+                DataPrivate.mergeJSONObject(properties, sendProperties);
             }
 
             jsonObject.put("properties", sendProperties);
             jsonObject.put("time", System.currentTimeMillis());
 //
-//            Log.i(TAG, SensorsDataPrivate.formatJson(jsonObject.toString()));
+//            Log.i(TAG, DataPrivate.formatJson(jsonObject.toString()));
             Log.i(TAG, "上传数据。。。。。"+properties);
 
         } catch (Exception e) {

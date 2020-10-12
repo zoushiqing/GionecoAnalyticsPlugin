@@ -36,7 +36,7 @@ import java.util.Map;
 
 import androidx.appcompat.widget.SwitchCompat;
 
-class SensorsDataPrivate {
+class DataPrivate {
     private static final SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"
             + ".SSS", Locale.CHINA);
 
@@ -60,7 +60,7 @@ class SensorsDataPrivate {
         final Map<String, Object> deviceInfo = new HashMap<>();
         {
             deviceInfo.put("$lib", "Android");
-            deviceInfo.put("$lib_version", SensorsDataAPI.SDK_VERSION);
+            deviceInfo.put("$lib_version", DataAPI.SDK_VERSION);
             deviceInfo.put("$os", "Android");
             deviceInfo.put("$os_version",
                     Build.VERSION.RELEASE == null ? "UNKNOWN" : Build.VERSION.RELEASE);

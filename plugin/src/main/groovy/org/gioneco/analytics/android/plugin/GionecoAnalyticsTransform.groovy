@@ -27,7 +27,7 @@ class GionecoAnalyticsTransform extends Transform {
 
     @Override
     String getName() {
-        return "sensorsAnalytics"
+        return "gionecoAnalytics"
     }
 
     /**
