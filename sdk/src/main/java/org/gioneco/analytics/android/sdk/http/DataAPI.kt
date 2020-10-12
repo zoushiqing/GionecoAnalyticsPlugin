@@ -6,6 +6,7 @@ import android.util.Log
 import org.json.JSONObject
 
 import androidx.annotation.Keep
+import org.gioneco.analytics.android.sdk.helper.DataAppViewScreenHelper
 import org.gioneco.analytics.android.sdk.utils.DataUtils
 
 @Keep
@@ -29,6 +30,7 @@ class DataAPI private constructor() {
         fun init(application: Application): DataAPI {
             mDeviceId = DataUtils.getAndroidID(application.applicationContext)
             mDeviceInfo = DataUtils.getDeviceInfo(application.applicationContext)
+            DataAppViewScreenHelper.registerActivityLifecycleCallbacks(application)
             Companion.application = application
             return getInstance()
         }

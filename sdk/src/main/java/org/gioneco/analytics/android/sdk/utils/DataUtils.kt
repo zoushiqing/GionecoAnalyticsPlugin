@@ -31,6 +31,7 @@ import java.util.Locale
 
 import androidx.appcompat.widget.SwitchCompat
 import org.gioneco.analytics.android.sdk.http.DataAPI
+import kotlin.jvm.Throws
 
 object DataUtils {
     private val mDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss" + ".SSS", Locale.CHINA)
