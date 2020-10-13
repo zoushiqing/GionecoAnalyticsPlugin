@@ -10,7 +10,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="org.example.maidian.Main2Activity"></activity>
+        <activity
+            android:name="org.example.maidian.Main2Activity"
+            android:process=":andoter">
+
+        </activity>
         <activity android:name="org.example.maidian.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
