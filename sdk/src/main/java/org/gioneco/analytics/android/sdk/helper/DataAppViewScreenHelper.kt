@@ -3,15 +3,19 @@ package org.gioneco.analytics.android.sdk.helper
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.database.ContentObserver
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.text.TextUtils
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import org.gioneco.analytics.android.sdk.http.DataAPI
 import org.json.JSONObject
+import java.lang.ref.WeakReference
 import java.util.*
-import android.os.Build.VERSION.SDK_INT
 
 
 
@@ -27,7 +31,10 @@ class DataAppViewScreenHelper {
 
     companion object {
         private val mIgnoredActivities = ArrayList<String>()
-
+        private lateinit var mDatabaseHelper:DatabaseHelper
+        private lateinit var countDownTimer: CountDownTimer
+        private const val SESSION_INTERVAL_TIME = 30 * 1000L
+        private var mCurrentActivity: WeakReference<Activity>? = null
 
         /**
          * 记录页面浏览事件
@@ -42,7 +49,7 @@ class DataAppViewScreenHelper {
                 val properties = JSONObject()
                 properties.put("\$activity", activity.javaClass.canonicalName)
                 properties.put("\$title", getActivityTitle(activity));
-                DataAPI.getInstance().track("AppViewScreen", properties)
+                DataAPI.getInstance().track("\$AppViewScreen", properties)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -54,8 +61,25 @@ class DataAppViewScreenHelper {
          * @param application
          */
         fun registerActivityLifecycleCallbacks(application: Application) {
+            mDatabaseHelper = DatabaseHelper(application.applicationContext, application.packageName)
+            countDownTimer = object : CountDownTimer(SESSION_INTERVAL_TIME, (10 * 1000).toLong()) {
+                override fun onTick(l: Long) {
+
+                }
+
+                override fun onFinish() {
+                    if (mCurrentActivity != null) {
+                        trackAppEnd(mCurrentActivity!!.get())
+                    }
+                }
+            }
             application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-                override fun onActivityPaused(activity: Activity?) {}
+
+                override fun onActivityPaused(activity: Activity?) {
+                    mCurrentActivity = WeakReference<Activity>(activity)
+                    countDownTimer.start()
+                    mDatabaseHelper.commitAppPausedTime(System.currentTimeMillis())
+                }
 
                 override fun onActivityResumed(activity: Activity?) {
                     if (activity != null) {
@@ -63,7 +87,20 @@ class DataAppViewScreenHelper {
                     }
                 }
 
-                override fun onActivityStarted(activity: Activity?) {}
+                override fun onActivityStarted(activity: Activity?) {
+                    mDatabaseHelper.commitAppStart(true)
+                    val timeDiff = System.currentTimeMillis() - mDatabaseHelper.appPausedTime
+                    if (timeDiff > SESSION_INTERVAL_TIME) {
+                        if (!mDatabaseHelper.appEndEventState) {
+                            trackAppEnd(activity)
+                        }
+                    }
+
+                    if (mDatabaseHelper.appEndEventState) {
+                        mDatabaseHelper.commitAppEndEventState(false)
+                        trackAppStart(activity)
+                    }
+                }
 
                 override fun onActivityDestroyed(activity: Activity?) {}
 
@@ -73,6 +110,57 @@ class DataAppViewScreenHelper {
 
                 override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
 
+            })
+        }
+
+        /**
+         * Track $AppStart 事件
+         */
+        private fun trackAppStart(activity: Activity?) {
+            try {
+                if (activity == null) {
+                    return
+                }
+                val properties = JSONObject()
+                properties.put("\$activity", activity.javaClass.canonicalName)
+                properties.put("\$title", getActivityTitle(activity))
+                DataAPI.getInstance().track("\$AppStart", properties)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+
+        /**
+         * Track $AppEnd 事件
+         */
+        private fun trackAppEnd(activity: Activity?) {
+            try {
+                if (activity == null) {
+                    return
+                }
+                val properties = JSONObject()
+                properties.put("\$activity", activity.javaClass.canonicalName)
+                properties.put("\$title", getActivityTitle(activity))
+                DataAPI.getInstance().track("\$AppEnd", properties)
+                mDatabaseHelper.commitAppEndEventState(true)
+                mCurrentActivity = null
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+        /**
+         * 注册 AppStart 的监听
+         */
+        fun registerActivityStateObserver(application: Application) {
+            application.contentResolver.registerContentObserver(mDatabaseHelper.appStartUri,
+                    false, object : ContentObserver(Handler()) {
+                override fun onChange(selfChange: Boolean, uri: Uri) {
+                    if (mDatabaseHelper.appStartUri.equals(uri)) {
+                        countDownTimer.cancel()
+                    }
+                }
             })
         }
 

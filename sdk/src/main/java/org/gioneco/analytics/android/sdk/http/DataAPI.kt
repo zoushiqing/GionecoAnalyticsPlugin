@@ -35,6 +35,8 @@ class DataAPI private constructor() {
             mDeviceId = DataUtils.getAndroidID(application.applicationContext)
             mDeviceInfo = DataUtils.getDeviceInfo(application.applicationContext)
             DataAppViewScreenHelper.registerActivityLifecycleCallbacks(application)
+            DataAppViewScreenHelper.registerActivityStateObserver(application)
+
             Companion.application = application
         }
 
